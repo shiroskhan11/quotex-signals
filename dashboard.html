@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <h2>Welcome, shiroskhan</h2>
+    <p>Live OTC Signals (dummy data)</p>
+    <table border="1" cellpadding="10">
+      <thead>
+        <tr>
+          <th>Pair</th>
+          <th>Signal</th>
+          <th>Confidence</th>
+          <th>Entry Time (UAE)</th>
+          <th>Countdown</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>USD/BRL</td>
+          <td style="color: green;">UP</td>
+          <td>89%</td>
+          <td id="entry-time">--:--</td>
+          <td id="countdown">--:--</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <label>Martingale Steps: 
+      <select>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+    </label>
+    <br><br>
+    <label>Daily Target ($): <input type="number" id="target" value="50"/></label>
+    <br>
+    <label>Progress: <progress value="10" max="50"></progress> $10</label>
+    <br><br>
+    <button onclick="resetProgress()">Reset</button>
+  </div>
+  <script>
+    function updateCountdown() {
+      const now = new Date();
+      const uaeOffset = 4 * 60; // UAE is UTC+4
+      const localOffset = now.getTimezoneOffset();
+      const uaeTime = new Date(now.getTime() + (uaeOffset + localOffset) * 60000);
+      const minutes = uaeTime.getMinutes();
+      const nextEntry = new Date(uaeTime);
+      nextEntry.setSeconds(0);
+      nextEntry.setMilliseconds(0);
+      nextEntry.setMinutes(minutes - (minutes % 5) + 5);
+      const diff = (nextEntry - uaeTime) / 1000;
+      const minutesLeft = Math.floor(diff / 60);
+      const secondsLeft = Math.floor(diff % 60);
+      document.getElementById('entry-time').textContent = nextEntry.toTimeString().slice(0,5);
+      document.getElementById('countdown').textContent = `${minutesLeft.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
+    }
+    function resetProgress() {
+      alert("Progress reset!");
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
